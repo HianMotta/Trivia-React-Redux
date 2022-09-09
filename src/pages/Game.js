@@ -51,7 +51,10 @@ class Game extends React.Component {
 
   handleClick = () => {
     const { counter } = this.state;
-    this.setState({ counter: counter + 1, allAnswers: [] });
+    const FOUR = 4;
+    if (counter < FOUR) {
+      this.setState({ counter: counter + 1, allAnswers: [] });
+    }
   };
 
   render() {

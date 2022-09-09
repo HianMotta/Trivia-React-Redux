@@ -28,7 +28,12 @@ class Game extends React.Component {
     const answers = [...results[counter]
       .incorrect_answers, results[counter].correct_answer];
     console.log(answers);
-    this.setState({ allAnswers: answers });
+    const shuffled = answers
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+    console.log(shuffled);
+    this.setState({ allAnswers: shuffled });
   };
 
   verifyToken = async () => {
@@ -59,14 +64,14 @@ class Game extends React.Component {
             <h1 data-testid="question-category">{results[counter].category}</h1>
             <h2 data-testid="question-text">{results[counter].question}</h2>
           </div>)}
-        <div>
+        <div data-testid="answer-options">
           {allAnswers.map((answer, index) => (
             answer === results[counter].correct_answer ? (
               <button
                 onClick={ this.handleClick }
                 key={ index }
                 type="button"
-                data-testid="correct_answer"
+                data-testid="correct-answer"
               >
                 {answer}
               </button>

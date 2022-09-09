@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getTokenThunk, getInfos } from '../redux/actions/index';
 
 class Login extends React.Component {
   constructor() {
@@ -9,6 +11,15 @@ class Login extends React.Component {
       email: '',
       isDisable: true,
     };
+  }
+
+  componentDidUpdate() {
+    const { token, history } = this.props;
+    console.log(token, 'token');
+    localStorage.setItem('token', token);
+    if (token.length > 0) {
+      history.push('/game');
+    }
   }
 
   settingsRedirect = () => {
@@ -30,6 +41,13 @@ class Login extends React.Component {
     this.setState({
       [name]: value,
     }, () => this.handleNameEmail());
+  };
+
+  handleStart = () => {
+    const { dispatch } = this.props;
+    const { name, email } = this.state;
+    dispatch(getTokenThunk());
+    dispatch(getInfos(name, email));
   };
 
   render() {
@@ -63,6 +81,7 @@ class Login extends React.Component {
           type="button"
           data-testid="btn-play"
           disabled={ isDisable }
+          onClick={ this.handleStart }
         >
           Começar jogo
         </button>
@@ -80,10 +99,16 @@ class Login extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  token: state.player.token,
+});
+
 Login.propTypes = {
+  token: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default Login;
+export default connect(mapStateToProps)(Login);

@@ -22,6 +22,11 @@ class Login extends React.Component {
     }
   }
 
+  settingsRedirect = () => {
+    const { history } = this.props;
+    history.push('/settings');
+  };
+
   handleNameEmail = () => {
     const { name, email } = this.state;
     if (name.length === 0 || email.length === 0) {
@@ -79,6 +84,14 @@ class Login extends React.Component {
           onClick={ this.handleStart }
         >
           Começar jogo
+        </button>
+
+        <button
+          type="button"
+          data-testid="btn-settings"
+          onClick={ this.settingsRedirect }
+        >
+          Configurações
         </button>
 
       </form>

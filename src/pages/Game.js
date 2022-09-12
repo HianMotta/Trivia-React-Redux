@@ -92,6 +92,7 @@ class Game extends React.Component {
 
   nextButtonHandleClick = () => {
     const { counter } = this.state;
+    const { history } = this.props;
     const FOUR = 4;
     if (counter < FOUR) {
       this.setState({
@@ -102,6 +103,9 @@ class Game extends React.Component {
         wasAnswered: false,
       });
       this.handleResetBorderCollor();
+    }
+    if (counter >= FOUR) {
+      history.push('/feedback');
     }
   };
 

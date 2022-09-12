@@ -10,6 +10,7 @@ class Game extends React.Component {
       results: [],
       counter: 0,
       allAnswers: [],
+      wasAnswered: false,
     };
   }
 
@@ -57,21 +58,31 @@ class Game extends React.Component {
     wrongAnswer.forEach((element) => {
       element.style.border = '3px solid red';
     });
+    this.setState({ wasAnswered: true });
   };
 
-  // handleResetBorderCollor = () => {
-  //   const correctAnswer = document.querySelector('#correct-answer');
-  //   const wrongAnswer = document.querySelectorAll('#wrong-answer');
+  nextButtonHandleClick = () => {
+    const { counter } = this.state;
+    const FOUR = 4;
+    if (counter < FOUR) {
+      this.setState({ counter: counter + 1, allAnswers: [], wasAnswered: false });
+      this.handleResetBorderCollor();
+    }
+  };
 
-  //   correctAnswer.style.border = 'none';
+  handleResetBorderCollor = () => {
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
 
-  //   wrongAnswer.forEach((element) => {
-  //     element.style.border = '3px solid red';
-  //   });
-  // };
+    correctAnswer.style.border = 'none';
+
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
+    });
+  };
 
   render() {
-    const { results, counter, allAnswers } = this.state;
+    const { results, counter, allAnswers, wasAnswered } = this.state;
     return (
       <div>
         <Header />
@@ -106,6 +117,17 @@ class Game extends React.Component {
             )
           ))}
         </div>
+        { wasAnswered
+        && (
+          <button
+            onClick={ this.nextButtonHandleClick }
+            data-testid="btn-next"
+            type="button"
+          >
+            Proxima pergunta
+          </button>
+        ) }
+
       </div>
     );
   }

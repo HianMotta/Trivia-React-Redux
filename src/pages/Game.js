@@ -10,6 +10,7 @@ class Game extends React.Component {
       results: [],
       counter: 0,
       allAnswers: [],
+      wasAnswered: false,
     };
   }
 
@@ -28,12 +29,10 @@ class Game extends React.Component {
     const { results, counter } = this.state;
     const answers = [...results[counter]
       .incorrect_answers, results[counter].correct_answer];
-    console.log(answers);
     const shuffled = answers
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value);
-    console.log(shuffled);
     this.setState({ allAnswers: shuffled });
   };
 
@@ -51,15 +50,19 @@ class Game extends React.Component {
   };
 
   handleClick = () => {
+    this.setState({ wasAnswered: true });
+  };
+
+  nextButtonHandleClick = () => {
     const { counter } = this.state;
     const FOUR = 4;
     if (counter < FOUR) {
-      this.setState({ counter: counter + 1, allAnswers: [] });
+      this.setState({ counter: counter + 1, allAnswers: [], wasAnswered: false });
     }
   };
 
   render() {
-    const { results, counter, allAnswers } = this.state;
+    const { results, counter, allAnswers, wasAnswered } = this.state;
     return (
       <div>
         <Header />
@@ -92,6 +95,17 @@ class Game extends React.Component {
             )
           ))}
         </div>
+        { wasAnswered
+        && (
+          <button
+            onClick={ this.nextButtonHandleClick }
+            data-testid="btn-next"
+            type="button"
+          >
+            Proxima pergunta
+          </button>
+        ) }
+
       </div>
     );
   }

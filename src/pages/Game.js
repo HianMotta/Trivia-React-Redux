@@ -72,6 +72,8 @@ class Game extends React.Component {
   };
 
   handleClick = ({ target }) => {
+    const { dispatch } = this.props;
+    const { timer } = this.state;
     const correctAnswer = document.querySelector('#correct-answer');
     const wrongAnswer = document.querySelectorAll('#wrong-answer');
 
@@ -81,10 +83,8 @@ class Game extends React.Component {
       element.style.border = '3px solid red';
     });
 
-    const { dispatch } = this.props;
-    const DEFAULT_TIMER = 10;
     if (target.id === 'correct-answer') {
-      const amountIncrease = this.calculateDifficulty(DEFAULT_TIMER);
+      const amountIncrease = this.calculateDifficulty(timer);
       dispatch(increaseScore(amountIncrease));
     }
     this.setState({ wasAnswered: true });

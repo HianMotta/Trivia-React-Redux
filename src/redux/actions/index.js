@@ -2,6 +2,7 @@ import triviaApiToken from '../../services/triviaApiToken';
 
 export const GET_TOKEN = 'GET_TOKEN';
 export const GET_INFOS = 'INFOS';
+export const INCREASE_SCORE = 'INCREASE_SCORE';
 
 export const getInfos = (name, gravatarEmail) => ({
   type: GET_INFOS,
@@ -24,3 +25,8 @@ export const getTokenThunk = () => async (dispatch) => {
     console.log(e);
   }
 };
+
+export const increaseScore = (payload) => ({
+  type: INCREASE_SCORE,
+  payload,
+});

@@ -17,13 +17,13 @@ class Game extends React.Component {
 
   componentDidMount() {
     this.verifyToken();
+    this.interval();
   }
 
   componentDidUpdate() {
     const { allAnswers } = this.state;
     if (allAnswers.length === 0) {
       this.createAnswers();
-      this.interval();
     }
   }
 
@@ -69,7 +69,7 @@ class Game extends React.Component {
     const { timer } = this.state;
     this.setState({ timer: timer - 1 }, () => {
       if (timer === 0) {
-        this.setState({ isDisabled: true });
+        this.setState({ timer: 0, isDisabled: true });
       }
     });
   };
@@ -84,7 +84,10 @@ class Game extends React.Component {
     return (
       <div>
         <Header />
-        <span>{ timer }</span>
+        <span>
+          Timer:
+          { timer }
+        </span>
         { results[counter]
         && (
           <div>

@@ -83,7 +83,6 @@ class Game extends React.Component {
       element.style.border = '3px solid red';
     });
 
-
     if (target.id === 'correct-answer') {
       const amountIncrease = this.calculateDifficulty(timer);
       dispatch(increaseScore(amountIncrease));
@@ -114,12 +113,11 @@ class Game extends React.Component {
       }
     });
   };
-  
+
   interval = () => {
     const oneSecond = 1000;
     setInterval(() => this.timeCounter(), oneSecond);
   };
-
 
   handleResetBorderCollor = () => {
     const correctAnswer = document.querySelector('#correct-answer');

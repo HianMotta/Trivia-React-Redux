@@ -28,12 +28,10 @@ class Game extends React.Component {
     const { results, counter } = this.state;
     const answers = [...results[counter]
       .incorrect_answers, results[counter].correct_answer];
-    console.log(answers);
     const shuffled = answers
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value);
-    console.log(shuffled);
     this.setState({ allAnswers: shuffled });
   };
 
@@ -51,12 +49,26 @@ class Game extends React.Component {
   };
 
   handleClick = () => {
-    const { counter } = this.state;
-    const FOUR = 4;
-    if (counter < FOUR) {
-      this.setState({ counter: counter + 1, allAnswers: [] });
-    }
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+
+    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
+
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
+    });
   };
+
+  // handleResetBorderCollor = () => {
+  //   const correctAnswer = document.querySelector('#correct-answer');
+  //   const wrongAnswer = document.querySelectorAll('#wrong-answer');
+
+  //   correctAnswer.style.border = 'none';
+
+  //   wrongAnswer.forEach((element) => {
+  //     element.style.border = '3px solid red';
+  //   });
+  // };
 
   render() {
     const { results, counter, allAnswers } = this.state;
@@ -76,6 +88,7 @@ class Game extends React.Component {
                 onClick={ this.handleClick }
                 key={ index }
                 type="button"
+                id="correct-answer"
                 data-testid="correct-answer"
               >
                 {answer}
@@ -85,6 +98,7 @@ class Game extends React.Component {
                 onClick={ this.handleClick }
                 key={ index }
                 type="button"
+                id="wrong-answer"
                 data-testid={ `wrong-answer-${index}` }
               >
                 {answer}

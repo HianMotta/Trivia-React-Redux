@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import fetchQuestions from '../services/questionsAPI';
+import Header from '../components/Header';
 
 class Game extends React.Component {
   constructor() {
@@ -61,6 +62,7 @@ class Game extends React.Component {
     const { results, counter, allAnswers } = this.state;
     return (
       <div>
+        <Header />
         { results[counter]
         && (
           <div>

@@ -14,6 +14,7 @@ class Game extends React.Component {
       allAnswers: [],
       isDisabled: false,
       timer: 30,
+      wasAnswered: false,
     };
   }
 
@@ -54,6 +55,10 @@ class Game extends React.Component {
   };
 
   handleClick = () => {
+    this.setState({ wasAnswered: true });
+  };
+
+  nextButtonHandleClick = () => {
     const { counter } = this.state;
     const FOUR = 4;
     if (counter < FOUR) {
@@ -121,6 +126,17 @@ class Game extends React.Component {
             )
           ))}
         </div>
+        { wasAnswered
+        && (
+          <button
+            onClick={ this.nextButtonHandleClick }
+            data-testid="btn-next"
+            type="button"
+          >
+            Proxima pergunta
+          </button>
+        ) }
+
       </div>
     );
   }

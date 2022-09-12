@@ -54,7 +54,39 @@ class Game extends React.Component {
     }
   };
 
-  handleClick = () => {
+  calculateDifficulty = (timer) => {
+    const { results, counter } = this.state;
+    const DEFAULT_SCORE = 10;
+    const MEDIUM = 2;
+    const HARD = 3;
+    switch (results[counter].difficulty) {
+    case 'easy':
+      return DEFAULT_SCORE + timer;
+    case 'medium':
+      return DEFAULT_SCORE + (timer * MEDIUM);
+    case 'hard':
+      return DEFAULT_SCORE + (timer * HARD);
+    default:
+      return 0;
+    }
+  };
+
+  handleClick = ({ target }) => {
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+
+    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
+
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
+    });
+
+    const { dispatch } = this.props;
+    const DEFAULT_TIMER = 10;
+    if (target.id === 'correct-answer') {
+      const amountIncrease = this.calculateDifficulty(DEFAULT_TIMER);
+      dispatch(increaseScore(amountIncrease));
+    }
     this.setState({ wasAnswered: true });
   };
 

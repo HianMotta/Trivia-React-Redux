@@ -12,6 +12,8 @@ class Game extends React.Component {
       results: [],
       counter: 0,
       allAnswers: [],
+      isDisabled: false,
+      timer: 30,
     };
   }
 
@@ -23,6 +25,7 @@ class Game extends React.Component {
     const { allAnswers } = this.state;
     if (allAnswers.length === 0) {
       this.createAnswers();
+      this.interval();
     }
   }
 
@@ -50,57 +53,38 @@ class Game extends React.Component {
     }
   };
 
-  calculateDifficulty = (timer) => {
-    const { results, counter } = this.state;
-    const DEFAULT_SCORE = 10;
-    const MEDIUM = 2;
-    const HARD = 3;
-    switch (results[counter].difficulty) {
-    case 'easy':
-      return DEFAULT_SCORE + timer;
-    case 'medium':
-      return DEFAULT_SCORE + (timer * MEDIUM);
-    case 'hard':
-      return DEFAULT_SCORE + (timer * HARD);
-    default:
-      return 0;
+  handleClick = () => {
+    const { counter } = this.state;
+    const FOUR = 4;
+    if (counter < FOUR) {
+      this.setState({
+        counter: counter + 1,
+        allAnswers: [],
+        timer: 30,
+        isDisabled: false });
     }
   };
 
-  handleClick = ({ target }) => {
-    const correctAnswer = document.querySelector('#correct-answer');
-    const wrongAnswer = document.querySelectorAll('#wrong-answer');
-
-    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
-
-    wrongAnswer.forEach((element) => {
-      element.style.border = '3px solid red';
+  timeCounter = () => {
+    const { timer } = this.state;
+    this.setState({ timer: timer - 1 }, () => {
+      if (timer === 0) {
+        this.setState({ isDisabled: true });
+      }
     });
-
-    const { dispatch } = this.props;
-    const DEFAULT_TIMER = 10;
-    if (target.id === 'correct-answer') {
-      const amountIncrease = this.calculateDifficulty(DEFAULT_TIMER);
-      dispatch(increaseScore(amountIncrease));
-    }
   };
 
-  // handleResetBorderCollor = () => {
-  //   const correctAnswer = document.querySelector('#correct-answer');
-  //   const wrongAnswer = document.querySelectorAll('#wrong-answer');
-
-  //   correctAnswer.style.border = 'none';
-
-  //   wrongAnswer.forEach((element) => {
-  //     element.style.border = '3px solid red';
-  //   });
-  // };
+  interval = () => {
+    const oneSecond = 1000;
+    setInterval(() => this.timeCounter(), oneSecond);
+  };
 
   render() {
-    const { results, counter, allAnswers } = this.state;
+    const { results, counter, allAnswers, timer, isDisabled } = this.state;
     return (
       <div>
         <Header />
+        <span>{ timer }</span>
         { results[counter]
         && (
           <div>
@@ -116,6 +100,7 @@ class Game extends React.Component {
                 type="button"
                 id="correct-answer"
                 data-testid="correct-answer"
+                disabled={ isDisabled }
               >
                 {answer}
               </button>
@@ -126,6 +111,7 @@ class Game extends React.Component {
                 type="button"
                 id="wrong-answer"
                 data-testid={ `wrong-answer-${index}` }
+                disabled={ isDisabled }
               >
                 {answer}
               </button>

@@ -98,7 +98,10 @@ class Game extends React.Component {
         counter: counter + 1,
         allAnswers: [],
         timer: 30,
-        isDisabled: false });
+        isDisabled: false,
+        wasAnswered: false,
+      });
+      this.handleResetBorderCollor();
     }
   };
 
@@ -116,8 +119,19 @@ class Game extends React.Component {
     setInterval(() => this.timeCounter(), oneSecond);
   };
 
+  handleResetBorderCollor = () => {
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+
+    correctAnswer.style.border = 'none';
+
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
+    });
+  };
+
   render() {
-    const { results, counter, allAnswers, timer, isDisabled } = this.state;
+    const { results, counter, allAnswers, timer, isDisabled, wasAnswered } = this.state;
     return (
       <div>
         <Header />

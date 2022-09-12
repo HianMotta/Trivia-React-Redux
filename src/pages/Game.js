@@ -12,6 +12,7 @@ class Game extends React.Component {
       allAnswers: [],
       isDisabled: false,
       timer: 30,
+      wasAnswered: false,
     };
   }
 
@@ -31,12 +32,10 @@ class Game extends React.Component {
     const { results, counter } = this.state;
     const answers = [...results[counter]
       .incorrect_answers, results[counter].correct_answer];
-    console.log(answers);
     const shuffled = answers
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value);
-    console.log(shuffled);
     this.setState({ allAnswers: shuffled });
   };
 
@@ -54,6 +53,18 @@ class Game extends React.Component {
   };
 
   handleClick = () => {
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+
+    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
+
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
+    });
+    this.setState({ wasAnswered: true });
+  };
+
+  nextButtonHandleClick = () => {
     const { counter } = this.state;
     const FOUR = 4;
     if (counter < FOUR) {
@@ -61,7 +72,10 @@ class Game extends React.Component {
         counter: counter + 1,
         allAnswers: [],
         timer: 30,
-        isDisabled: false });
+        isDisabled: false,
+        wasAnswered: false,
+      });
+      this.handleResetBorderCollor();
     }
   };
 
@@ -79,8 +93,19 @@ class Game extends React.Component {
     setInterval(() => this.timeCounter(), oneSecond);
   };
 
+  handleResetBorderCollor = () => {
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+
+    correctAnswer.style.border = 'none';
+
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
+    });
+  };
+
   render() {
-    const { results, counter, allAnswers, timer, isDisabled } = this.state;
+    const { results, counter, allAnswers, timer, isDisabled, wasAnswered } = this.state;
     return (
       <div>
         <Header />
@@ -101,6 +126,7 @@ class Game extends React.Component {
                 onClick={ this.handleClick }
                 key={ index }
                 type="button"
+                id="correct-answer"
                 data-testid="correct-answer"
                 disabled={ isDisabled }
               >
@@ -111,6 +137,7 @@ class Game extends React.Component {
                 onClick={ this.handleClick }
                 key={ index }
                 type="button"
+                id="wrong-answer"
                 data-testid={ `wrong-answer-${index}` }
                 disabled={ isDisabled }
               >
@@ -119,6 +146,17 @@ class Game extends React.Component {
             )
           ))}
         </div>
+        { wasAnswered
+        && (
+          <button
+            onClick={ this.nextButtonHandleClick }
+            data-testid="btn-next"
+            type="button"
+          >
+            Proxima pergunta
+          </button>
+        ) }
+
       </div>
     );
   }

@@ -10,12 +10,15 @@ class Game extends React.Component {
       results: [],
       counter: 0,
       allAnswers: [],
+      isDisabled: false,
+      timer: 30,
       wasAnswered: false,
     };
   }
 
   componentDidMount() {
     this.verifyToken();
+    this.interval();
   }
 
   componentDidUpdate() {
@@ -65,9 +68,29 @@ class Game extends React.Component {
     const { counter } = this.state;
     const FOUR = 4;
     if (counter < FOUR) {
-      this.setState({ counter: counter + 1, allAnswers: [], wasAnswered: false });
+      this.setState({
+        counter: counter + 1,
+        allAnswers: [],
+        timer: 30,
+        isDisabled: false,
+        wasAnswered: false,
+      });
       this.handleResetBorderCollor();
     }
+  };
+
+  timeCounter = () => {
+    const { timer } = this.state;
+    this.setState({ timer: timer - 1 }, () => {
+      if (timer === 0) {
+        this.setState({ timer: 0, isDisabled: true });
+      }
+    });
+  };
+
+  interval = () => {
+    const oneSecond = 1000;
+    setInterval(() => this.timeCounter(), oneSecond);
   };
 
   handleResetBorderCollor = () => {
@@ -82,10 +105,14 @@ class Game extends React.Component {
   };
 
   render() {
-    const { results, counter, allAnswers, wasAnswered } = this.state;
+    const { results, counter, allAnswers, timer, isDisabled, wasAnswered } = this.state;
     return (
       <div>
         <Header />
+        <span>
+          Timer:
+          { timer }
+        </span>
         { results[counter]
         && (
           <div>
@@ -101,6 +128,7 @@ class Game extends React.Component {
                 type="button"
                 id="correct-answer"
                 data-testid="correct-answer"
+                disabled={ isDisabled }
               >
                 {answer}
               </button>
@@ -111,6 +139,7 @@ class Game extends React.Component {
                 type="button"
                 id="wrong-answer"
                 data-testid={ `wrong-answer-${index}` }
+                disabled={ isDisabled }
               >
                 {answer}
               </button>

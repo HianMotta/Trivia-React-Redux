@@ -10,6 +10,8 @@ class Game extends React.Component {
       results: [],
       counter: 0,
       allAnswers: [],
+      isDisabled: false,
+      timer: 30,
     };
   }
 
@@ -21,6 +23,7 @@ class Game extends React.Component {
     const { allAnswers } = this.state;
     if (allAnswers.length === 0) {
       this.createAnswers();
+      this.interval();
     }
   }
 
@@ -54,15 +57,34 @@ class Game extends React.Component {
     const { counter } = this.state;
     const FOUR = 4;
     if (counter < FOUR) {
-      this.setState({ counter: counter + 1, allAnswers: [] });
+      this.setState({
+        counter: counter + 1,
+        allAnswers: [],
+        timer: 30,
+        isDisabled: false });
     }
   };
 
+  timeCounter = () => {
+    const { timer } = this.state;
+    this.setState({ timer: timer - 1 }, () => {
+      if (timer === 0) {
+        this.setState({ isDisabled: true });
+      }
+    });
+  };
+
+  interval = () => {
+    const oneSecond = 1000;
+    setInterval(() => this.timeCounter(), oneSecond);
+  };
+
   render() {
-    const { results, counter, allAnswers } = this.state;
+    const { results, counter, allAnswers, timer, isDisabled } = this.state;
     return (
       <div>
         <Header />
+        <span>{ timer }</span>
         { results[counter]
         && (
           <div>
@@ -77,6 +99,7 @@ class Game extends React.Component {
                 key={ index }
                 type="button"
                 data-testid="correct-answer"
+                disabled={ isDisabled }
               >
                 {answer}
               </button>
@@ -86,6 +109,7 @@ class Game extends React.Component {
                 key={ index }
                 type="button"
                 data-testid={ `wrong-answer-${index}` }
+                disabled={ isDisabled }
               >
                 {answer}
               </button>

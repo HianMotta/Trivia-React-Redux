@@ -1,11 +1,16 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Header from '../components/Header';
 
 class Feedback extends Component {
   redirectToHome = () => {
     const { history } = this.props;
     history.push('/');
+  };
+
+  redirectToRanking = () => {
+    const { history } = this.props;
+    history.push('/Ranking');
   };
 
   render() {
@@ -21,6 +26,13 @@ class Feedback extends Component {
           onClick={ this.redirectToHome }
         >
           Play Again
+        </button>
+        <button
+          type="button"
+          data-testid="btn-ranking"
+          onClick={ this.redirectToRanking }
+        >
+          Ranking
         </button>
       </div>
     );

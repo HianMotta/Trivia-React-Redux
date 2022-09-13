@@ -30,6 +30,10 @@ class Game extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   createAnswers = () => {
     const { results, counter } = this.state;
     const answers = [...results[counter]

@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Header from '../components/Header';
+import { resetPlayerInfo } from '../redux/actions';
 
 class Ranking extends React.Component {
   handleHomeButton = () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
+    dispatch(resetPlayerInfo());
     history.push('/');
   };
 
@@ -29,6 +32,7 @@ Ranking.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default Ranking;
+export default connect()(Ranking);

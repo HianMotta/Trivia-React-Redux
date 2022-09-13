@@ -6,8 +6,8 @@ import Header from '../components/Header';
 import { increasePoints } from '../redux/actions/index';
 
 class Game extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       results: [],
       counter: 0,
@@ -20,7 +20,8 @@ class Game extends React.Component {
 
   componentDidMount() {
     this.verifyToken();
-    this.interval();
+    const oneSecond = 1000;
+    this.clock = setInterval(() => this.timeCounter(), oneSecond);
   }
 
   componentDidUpdate() {
@@ -31,8 +32,20 @@ class Game extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    clearInterval(this.clock);
+    this.disableButtons();
   }
+
+  disableButtons = () => {
+    const { timer } = this.state;
+    if (timer === 0) {
+      this.setState({ isDisabled: true });
+    }
+  };
+
+  stopTime = () => {
+    clearInterval(this.clock);
+  };
 
   createAnswers = () => {
     const { results, counter } = this.state;
@@ -43,6 +56,12 @@ class Game extends React.Component {
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value);
     this.setState({ allAnswers: shuffled });
+  };
+
+  decodeEntity = (inputStr) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = inputStr;
+    return textarea.value;
   };
 
   verifyToken = async () => {
@@ -116,15 +135,11 @@ class Game extends React.Component {
   timeCounter = () => {
     const { timer } = this.state;
     this.setState({ timer: timer - 1 }, () => {
-      if (timer === 0) {
+      if (timer <= 0) {
         this.setState({ timer: 0, isDisabled: true });
+        // this.stopTime();
       }
     });
-  };
-
-  interval = () => {
-    const oneSecond = 1000;
-    setInterval(() => this.timeCounter(), oneSecond);
   };
 
   handleResetBorderCollor = () => {
@@ -139,6 +154,10 @@ class Game extends React.Component {
 
   render() {
     const { results, counter, allAnswers, timer, isDisabled, wasAnswered } = this.state;
+    console.log(isDisabled);
+    // if (timer <= 0) {
+    //   this.stopTime();
+    // }
     return (
       <div>
         <Header />
@@ -150,7 +169,9 @@ class Game extends React.Component {
         && (
           <div>
             <h1 data-testid="question-category">{results[counter].category}</h1>
-            <h2 data-testid="question-text">{results[counter].question}</h2>
+            <h2 data-testid="question-text">
+              {this.decodeEntity(results[counter].question)}
+            </h2>
           </div>)}
         <div data-testid="answer-options">
           {allAnswers.map((answer, index) => (

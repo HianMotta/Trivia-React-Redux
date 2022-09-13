@@ -15,7 +15,7 @@ class App extends React.Component {
         <Route exact path="/game" component={ Game } />
         <Route exact path="/feedback" component={ Feedback } />
         <Route exact path="/settings" component={ Settings } />
-        <Route exact path="/Ranking" component={ Ranking } />
+        <Route exact path="/ranking" component={ Ranking } />
       </Switch>
     );
   }

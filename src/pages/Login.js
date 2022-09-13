@@ -15,7 +15,6 @@ class Login extends React.Component {
 
   componentDidUpdate() {
     const { token, history } = this.props;
-    console.log(token, 'token');
     localStorage.setItem('token', token);
     if (token.length > 0) {
       history.push('/game');

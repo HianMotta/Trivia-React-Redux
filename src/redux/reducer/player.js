@@ -1,4 +1,4 @@
-import { GET_INFOS, GET_TOKEN, INCREASE_SCORE } from '../actions';
+import { GET_INFOS, GET_TOKEN, INCREASE_POINTS } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -21,7 +21,7 @@ const playerReducer = (state = INITIAL_STATE, action) => {
       name: action.payload.name,
       gravatarEmail: action.payload.gravatarEmail,
     };
-  case INCREASE_SCORE:
+  case INCREASE_POINTS:
     return {
       ...state,
       score: state.score + action.payload,

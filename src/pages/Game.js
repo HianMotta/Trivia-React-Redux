@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import fetchQuestions from '../services/questionsAPI';
 import Header from '../components/Header';
-import { increaseScore } from '../redux/actions/index';
+import { increasePoints } from '../redux/actions/index';
 
 class Game extends React.Component {
   constructor() {
@@ -28,6 +28,10 @@ class Game extends React.Component {
     if (allAnswers.length === 0) {
       this.createAnswers();
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   createAnswers = () => {
@@ -85,7 +89,7 @@ class Game extends React.Component {
 
     if (target.id === 'correct-answer') {
       const amountIncrease = this.calculateDifficulty(timer);
-      dispatch(increaseScore(amountIncrease));
+      dispatch(increasePoints(amountIncrease));
     }
     this.setState({ wasAnswered: true });
   };
@@ -198,4 +202,8 @@ Game.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect()(Game);
+const mapStateToProps = (state) => ({
+  pontos: state.player.score,
+});
+
+export default connect(mapStateToProps)(Game);

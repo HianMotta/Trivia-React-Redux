@@ -12,7 +12,6 @@ class Feedback extends Component {
     this.state = {
       beBetterMsg: assertions < THREE,
       wellDoneMsg: assertions >= THREE,
-
     };
   }
 
@@ -66,6 +65,7 @@ Feedback.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
   assertions: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,

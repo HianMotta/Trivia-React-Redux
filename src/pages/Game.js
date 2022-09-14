@@ -7,8 +7,8 @@ import Header from '../components/Header';
 import { increasePoints } from '../redux/actions/index';
 
 class Game extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       results: [],
       counter: 0,
@@ -21,7 +21,8 @@ class Game extends React.Component {
 
   componentDidMount() {
     this.verifyToken();
-    this.interval();
+    const oneSecond = 1000;
+    this.clock = setInterval(() => this.timeCounter(), oneSecond);
   }
 
   componentDidUpdate() {
@@ -32,7 +33,7 @@ class Game extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    clearInterval(this.clock);
   }
 
   createAnswers = () => {
@@ -44,6 +45,12 @@ class Game extends React.Component {
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value);
     this.setState({ allAnswers: shuffled });
+  };
+
+  decodeEntity = (inputStr) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = inputStr;
+    return textarea.value;
   };
 
   verifyToken = async () => {
@@ -79,19 +86,11 @@ class Game extends React.Component {
   handleClick = ({ target }) => {
     const { dispatch } = this.props;
     const { timer } = this.state;
-    const correctAnswer = document.querySelector('#correct-answer');
-    const wrongAnswer = document.querySelectorAll('#wrong-answer');
-
-    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
-
-    wrongAnswer.forEach((element) => {
-      element.style.border = '3px solid red';
-    });
-
     if (target.id === 'correct-answer') {
       const amountIncrease = this.calculateDifficulty(timer);
       dispatch(increasePoints(amountIncrease));
     }
+    this.stopTimer();
     this.setState({ wasAnswered: true });
   };
 
@@ -99,6 +98,7 @@ class Game extends React.Component {
     const { counter } = this.state;
     const { history } = this.props;
     const FOUR = 4;
+    const oneSecond = 1000;
     if (counter < FOUR) {
       this.setState({
         counter: counter + 1,
@@ -106,6 +106,9 @@ class Game extends React.Component {
         timer: 30,
         isDisabled: false,
         wasAnswered: false,
+      }, () => {
+        this.clock = setInterval(() => this.timeCounter(), oneSecond);
+        return this.clock;
       });
       this.handleResetBorderCollor();
     }
@@ -118,24 +121,33 @@ class Game extends React.Component {
   timeCounter = () => {
     const { timer } = this.state;
     this.setState({ timer: timer - 1 }, () => {
-      if (timer === 0) {
-        this.setState({ timer: 0, isDisabled: true });
+      if (timer <= 0) {
+        this.setState({ timer: 0, isDisabled: true, wasAnswered: true });
+        this.stopTimer();
+        this.handleSetBorderCollor();
       }
     });
   };
 
-  interval = () => {
-    const oneSecond = 1000;
-    setInterval(() => this.timeCounter(), oneSecond);
+  stopTimer = () => {
+    clearInterval(this.clock);
+  };
+
+  handleSetBorderCollor = () => {
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
+    });
   };
 
   handleResetBorderCollor = () => {
     const correctAnswer = document.querySelector('#correct-answer');
     const wrongAnswer = document.querySelectorAll('#wrong-answer');
-
-    correctAnswer.style.border = 'none';
+    correctAnswer.style.border = '';
     wrongAnswer.forEach((element) => {
-      element.style.border = '3px solid red';
+      element.style.border = '';
     });
   };
 
@@ -146,9 +158,7 @@ class Game extends React.Component {
     const urlImg = `https://www.gravatar.com/avatar/${hashPlayer}`;
     const FOUR = 4;
     const playerScore = {
-      name,
-      score: pontos,
-      picture: urlImg,
+      name, score: pontos, picture: urlImg,
     };
     if (counter === FOUR) {
       const rankingStorage = JSON.parse(localStorage.getItem('Ranking'));
@@ -166,7 +176,7 @@ class Game extends React.Component {
     return (
       <div>
         <Header />
-        <span>
+        <span data-testid="timer">
           Timer:
           { timer }
         </span>
@@ -174,13 +184,15 @@ class Game extends React.Component {
         && (
           <div>
             <h1 data-testid="question-category">{results[counter].category}</h1>
-            <h2 data-testid="question-text">{results[counter].question}</h2>
+            <h2 data-testid="question-text">
+              {this.decodeEntity(results[counter].question)}
+            </h2>
           </div>)}
         <div data-testid="answer-options">
           {allAnswers.map((answer, index) => (
             answer === results[counter].correct_answer ? (
               <button
-                onClick={ this.handleClick }
+                onClick={ (e) => { this.handleSetBorderCollor(); this.handleClick(e); } }
                 key={ index }
                 type="button"
                 id="correct-answer"
@@ -191,7 +203,7 @@ class Game extends React.Component {
               </button>
             ) : (
               <button
-                onClick={ this.handleClick }
+                onClick={ (e) => { this.handleSetBorderCollor(); this.handleClick(e); } }
                 key={ index }
                 type="button"
                 id="wrong-answer"

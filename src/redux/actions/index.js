@@ -14,6 +14,10 @@ export const getInfos = (name, gravatarEmail) => ({
   },
 });
 
+export const resetPlayerInfo = () => ({
+  type: RESET_PLAYER_INFO,
+});
+
 const getTokenSuccess = (payload) => ({
   type: GET_TOKEN,
   payload,
@@ -31,8 +35,4 @@ export const getTokenThunk = () => async (dispatch) => {
 export const increasePoints = (payload) => ({
   type: INCREASE_POINTS,
   payload,
-});
-
-export const resetPlayerInfo = () => ({
-  type: RESET_PLAYER_INFO,
 });

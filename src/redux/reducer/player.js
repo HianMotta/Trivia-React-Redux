@@ -21,12 +21,6 @@ const playerReducer = (state = INITIAL_STATE, action) => {
       name: action.payload.name,
       gravatarEmail: action.payload.gravatarEmail,
     };
-  case INCREASE_POINTS:
-    return {
-      ...state,
-      score: state.score + action.payload,
-      assertions: state.assertions + 1,
-    };
   case RESET_PLAYER_INFO:
     return {
       ...state,
@@ -35,6 +29,12 @@ const playerReducer = (state = INITIAL_STATE, action) => {
       score: 0,
       gravatarEmail: '',
       token: '',
+    };
+  case INCREASE_POINTS:
+    return {
+      ...state,
+      score: state.score + action.payload,
+      assertions: state.assertions + 1,
     };
   default:
     return state;

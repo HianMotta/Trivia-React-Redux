@@ -28,11 +28,12 @@ class Login extends React.Component {
 
   handleNameEmail = () => {
     const { name, email } = this.state;
-    if (name.length === 0 || email.length === 0) {
-      this.setState({ isDisable: true });
-    } else {
-      this.setState({ isDisable: false });
-    }
+    const regularExpression = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    const verifyEmail = regularExpression.test(email);
+    const ONE = 1;
+    const namePassword = name.length >= ONE;
+    const emailAndNameVerify = verifyEmail && namePassword;
+    this.setState({ isDisable: !emailAndNameVerify });
   };
 
   handleChange = ({ target }) => {

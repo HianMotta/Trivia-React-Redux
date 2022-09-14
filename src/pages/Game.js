@@ -33,19 +33,18 @@ class Game extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.clock);
-    this.disableButtons();
   }
 
-  disableButtons = () => {
-    const { timer } = this.state;
-    if (timer === 0) {
-      this.setState({ isDisabled: true });
-    }
-  };
+  // disableButtons = () => {
+  //   const { timer } = this.state;
+  //   if (timer === 0) {
+  //     this.setState({ isDisabled: true });
+  //   }
+  // };
 
-  stopTime = () => {
-    clearInterval(this.clock);
-  };
+  // stopTime = () => {
+  //   clearInterval(this.clock);
+  // };
 
   createAnswers = () => {
     const { results, counter } = this.state;
@@ -97,15 +96,15 @@ class Game extends React.Component {
   handleClick = ({ target }) => {
     const { dispatch } = this.props;
     const { timer } = this.state;
-    const correctAnswer = document.querySelector('#correct-answer');
-    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+    // const correctAnswer = document.querySelector('#correct-answer');
+    // const wrongAnswer = document.querySelectorAll('#wrong-answer');
 
-    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
+    // correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
 
-    wrongAnswer.forEach((element) => {
-      element.style.border = '3px solid red';
-    });
-
+    // wrongAnswer.forEach((element) => {
+    //   element.style.border = '3px solid red';
+    // });
+    // this.handleResetBorderCollor();
     if (target.id === 'correct-answer') {
       const amountIncrease = this.calculateDifficulty(timer);
       dispatch(increasePoints(amountIncrease));
@@ -124,7 +123,7 @@ class Game extends React.Component {
         timer: 30,
         isDisabled: false,
         wasAnswered: false,
-      });
+      }, () => this.timeCounter());
       this.handleResetBorderCollor();
     }
     if (counter >= FOUR) {
@@ -136,9 +135,20 @@ class Game extends React.Component {
     const { timer } = this.state;
     this.setState({ timer: timer - 1 }, () => {
       if (timer <= 0) {
-        this.setState({ timer: 0, isDisabled: true });
-        // this.stopTime();
+        this.setState({ timer: 0, isDisabled: true, wasAnswered: true });
+        this.handleSetBorderCollor();
       }
+    });
+  };
+
+  handleSetBorderCollor = () => {
+    const correctAnswer = document.querySelector('#correct-answer');
+    const wrongAnswer = document.querySelectorAll('#wrong-answer');
+
+    correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
+
+    wrongAnswer.forEach((element) => {
+      element.style.border = '3px solid red';
     });
   };
 
@@ -146,9 +156,9 @@ class Game extends React.Component {
     const correctAnswer = document.querySelector('#correct-answer');
     const wrongAnswer = document.querySelectorAll('#wrong-answer');
 
-    correctAnswer.style.border = 'none';
+    correctAnswer.style.border = '';
     wrongAnswer.forEach((element) => {
-      element.style.border = '3px solid red';
+      element.style.border = '';
     });
   };
 
@@ -177,7 +187,7 @@ class Game extends React.Component {
           {allAnswers.map((answer, index) => (
             answer === results[counter].correct_answer ? (
               <button
-                onClick={ this.handleClick }
+                onClick={ (e) => { this.handleSetBorderCollor(); this.handleClick(e); } }
                 key={ index }
                 type="button"
                 id="correct-answer"
@@ -188,7 +198,7 @@ class Game extends React.Component {
               </button>
             ) : (
               <button
-                onClick={ this.handleClick }
+                onClick={ (e) => { this.handleSetBorderCollor(); this.handleClick(e); } }
                 key={ index }
                 type="button"
                 id="wrong-answer"

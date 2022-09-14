@@ -176,7 +176,7 @@ class Game extends React.Component {
     return (
       <div>
         <Header />
-        <span>
+        <span data-testid="timer">
           Timer:
           { timer }
         </span>

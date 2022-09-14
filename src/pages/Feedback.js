@@ -68,6 +68,5 @@ Feedback.propTypes = {
   dispatch: PropTypes.func.isRequired,
   assertions: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
-  dispatch: PropTypes.func.isRequired,
 };
 export default connect(mapStateToProps)(Feedback);

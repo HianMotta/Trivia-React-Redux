@@ -35,17 +35,6 @@ class Game extends React.Component {
     clearInterval(this.clock);
   }
 
-  // disableButtons = () => {
-  //   const { timer } = this.state;
-  //   if (timer === 0) {
-  //     this.setState({ isDisabled: true });
-  //   }
-  // };
-
-  // stopTime = () => {
-  //   clearInterval(this.clock);
-  // };
-
   createAnswers = () => {
     const { results, counter } = this.state;
     const answers = [...results[counter]
@@ -96,19 +85,11 @@ class Game extends React.Component {
   handleClick = ({ target }) => {
     const { dispatch } = this.props;
     const { timer } = this.state;
-    // const correctAnswer = document.querySelector('#correct-answer');
-    // const wrongAnswer = document.querySelectorAll('#wrong-answer');
-
-    // correctAnswer.style.border = '3px solid rgb(6, 240, 15)';
-
-    // wrongAnswer.forEach((element) => {
-    //   element.style.border = '3px solid red';
-    // });
-    // this.handleResetBorderCollor();
     if (target.id === 'correct-answer') {
       const amountIncrease = this.calculateDifficulty(timer);
       dispatch(increasePoints(amountIncrease));
     }
+    this.stopTimer();
     this.setState({ wasAnswered: true });
   };
 
@@ -116,6 +97,7 @@ class Game extends React.Component {
     const { counter } = this.state;
     const { history } = this.props;
     const FOUR = 4;
+    const oneSecond = 1000;
     if (counter < FOUR) {
       this.setState({
         counter: counter + 1,
@@ -123,7 +105,10 @@ class Game extends React.Component {
         timer: 30,
         isDisabled: false,
         wasAnswered: false,
-      }, () => this.timeCounter());
+      }, () => {
+        this.clock = setInterval(() => this.timeCounter(), oneSecond);
+        return this.clock;
+      });
       this.handleResetBorderCollor();
     }
     if (counter >= FOUR) {
@@ -136,9 +121,14 @@ class Game extends React.Component {
     this.setState({ timer: timer - 1 }, () => {
       if (timer <= 0) {
         this.setState({ timer: 0, isDisabled: true, wasAnswered: true });
+        this.stopTimer();
         this.handleSetBorderCollor();
       }
     });
+  };
+
+  stopTimer = () => {
+    clearInterval(this.clock);
   };
 
   handleSetBorderCollor = () => {
@@ -164,10 +154,6 @@ class Game extends React.Component {
 
   render() {
     const { results, counter, allAnswers, timer, isDisabled, wasAnswered } = this.state;
-    console.log(isDisabled);
-    // if (timer <= 0) {
-    //   this.stopTime();
-    // }
     return (
       <div>
         <Header />

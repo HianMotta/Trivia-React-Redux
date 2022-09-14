@@ -1,4 +1,4 @@
-import { GET_INFOS, GET_TOKEN, INCREASE_POINTS } from '../actions';
+import { GET_INFOS, GET_TOKEN, INCREASE_POINTS, RESET_PLAYER_INFO } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -26,6 +26,15 @@ const playerReducer = (state = INITIAL_STATE, action) => {
       ...state,
       score: state.score + action.payload,
       assertions: state.assertions + 1,
+    };
+  case RESET_PLAYER_INFO:
+    return {
+      ...state,
+      name: '',
+      assertions: 0,
+      score: 0,
+      gravatarEmail: '',
+      token: '',
     };
   default:
     return state;

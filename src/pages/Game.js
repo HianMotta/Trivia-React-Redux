@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import md5 from 'crypto-js/md5';
 import fetchQuestions from '../services/questionsAPI';
 import Header from '../components/Header';
 import { increasePoints } from '../redux/actions/index';
@@ -111,6 +112,7 @@ class Game extends React.Component {
     if (counter >= FOUR) {
       history.push('/feedback');
     }
+    this.sendInfoPlayers();
   };
 
   timeCounter = () => {
@@ -135,6 +137,28 @@ class Game extends React.Component {
     wrongAnswer.forEach((element) => {
       element.style.border = '3px solid red';
     });
+  };
+
+  sendInfoPlayers = () => {
+    const { name, email, pontos } = this.props;
+    const { counter } = this.state;
+    const hashPlayer = md5(email).toString();
+    const urlImg = `https://www.gravatar.com/avatar/${hashPlayer}`;
+    const FOUR = 4;
+    const playerScore = {
+      name,
+      score: pontos,
+      picture: urlImg,
+    };
+    if (counter === FOUR) {
+      const rankingStorage = JSON.parse(localStorage.getItem('Ranking'));
+
+      if (rankingStorage === null) {
+        localStorage.setItem('Ranking', JSON.stringify([playerScore]));
+      } else {
+        localStorage.setItem('Ranking', JSON.stringify([...rankingStorage, playerScore]));
+      }
+    }
   };
 
   render() {
@@ -200,10 +224,15 @@ Game.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  pontos: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   pontos: state.player.score,
+  name: state.player.name,
+  email: state.player.gravatarEmail,
 });
 
 export default connect(mapStateToProps)(Game);

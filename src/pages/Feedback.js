@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
+import { resetPlayerInfo } from '../redux/actions';
 
 class Feedback extends Component {
   constructor(props) {
@@ -11,12 +12,12 @@ class Feedback extends Component {
     this.state = {
       beBetterMsg: assertions < THREE,
       wellDoneMsg: assertions >= THREE,
-
     };
   }
 
   redirectToHome = () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
+    dispatch(resetPlayerInfo());
     history.push('/');
   };
 
@@ -64,6 +65,7 @@ Feedback.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
   assertions: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
 };

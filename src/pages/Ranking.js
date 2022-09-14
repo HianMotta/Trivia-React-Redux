@@ -39,7 +39,7 @@ class Ranking extends React.Component {
     console.log(playerInfo);
     return (
       <div data-testid="ranking-title">
-        <h1>Ranking!</h1>
+        <h1>Ranking</h1>
         {playerInfo.map((player, index) => (
           <div key={ index }>
             <img
